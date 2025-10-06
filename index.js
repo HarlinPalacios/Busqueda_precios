@@ -1,5 +1,4 @@
-import { config } from "dotenv"
-import { initServer } from "./configs/server.js"
+import "dotenv/config";
+import app from "./configs/server.js";
 
-config()
-initServer()
+export default app;

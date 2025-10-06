@@ -1,6 +1,6 @@
-import Resortes from './springs.model.js';
+import cloudinary from "../../configs/cloudinary.js";
+import Resortes from "../springs/springs.model.js";
 
-// Controlador para crear el resorte
 export const createSprings = async (req, res) => {
   try {
     const {
@@ -17,9 +17,8 @@ export const createSprings = async (req, res) => {
       costo,
     } = req.body;
 
-    const imagen = req.file ? `/uploads/${req.file.filename}` : null;
-
-     const normalize = (value) =>
+    // Normalizar código
+    const normalize = (value) =>
       typeof value === "string" ? value.replace(/\s/g, "").toLowerCase() : value;
 
     const codigoExistente = await Resortes.findOne({ codigo: normalize(codigo) });
@@ -30,9 +29,23 @@ export const createSprings = async (req, res) => {
       });
     }
 
+    // Subida de imagen a Cloudinary (si hay archivo)
+    let imagen = null;
+
+    if (req.file) {
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+
+      const resultado = await cloudinary.uploader.upload(dataURI, {
+        folder: "resortes", // Puedes cambiar el nombre de la carpeta en Cloudinary
+      });
+
+      imagen = resultado.secure_url;
+    }
+
     const resorte = new Resortes({
       carpeta,
-      codigo,
+      codigo: normalize(codigo),
       calibre,
       tipo_resorte,
       dia_externo,
@@ -65,6 +78,7 @@ export const createSprings = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Error al crear resorte:", error);
     res.status(500).json({
       message: "Error al crear el resorte",
       error: error.message,

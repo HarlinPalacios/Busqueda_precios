@@ -1,21 +1,19 @@
 {
   "name": "busqueda-de-precios",
   "version": "1.0.0",
-  "main": "index.js",
   "type": "module",
-  "starst": "node index.js",
-  "dev": "nodemon index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "node --watch index.js"
-  },
-  "keywords": [],
+  "main": "index.js",
+  "description": "Proyecto para buscar precios por calibre",
   "author": "Harlin Palacios",
   "license": "ISC",
-  "description": "Proyecto para buscar precios por calibre",
+  "keywords": [],
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon dev-server.js"
+  },
   "dependencies": {
     "argon2": "^0.44.0",
+    "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
