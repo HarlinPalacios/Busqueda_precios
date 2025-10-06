@@ -1,4 +1,4 @@
-import cloudinary from "../../configs/cloudinary.js";
+import { v2 as cloudinary } from "cloudinary";
 import Resortes from "../springs/springs.model.js";
 
 export const createSprings = async (req, res) => {
