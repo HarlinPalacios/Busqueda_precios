@@ -1,8 +1,9 @@
+import jwt from "jsonwebtoken";
+
 export const generateJWT = (uid = " ") => {
   return new Promise((resolve, reject) => {
     const payload = { uid };
 
-    // 🚨 Verificamos si la clave existe
     console.log("🔐 SECRET_KEY:", process.env.SECRET_KEY);
 
     jwt.sign(
