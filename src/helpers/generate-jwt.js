@@ -1,25 +1,26 @@
-import jwt from "jsonwebtoken"
-
 export const generateJWT = (uid = " ") => {
-    return new Promise((resolve, reject) => {
-        const payload = { uid }
+  return new Promise((resolve, reject) => {
+    const payload = { uid };
 
-        jwt.sign(
-            payload,
-            process.env.SECREt_KEY,
-            {
-                expiresIn: "48h"
-            },
-            (err, token) => {
-                if(err){
-                    reject({
-                        success: false,
-                        message: "No se pudo renerar el TOKEN"
-                    })
-                }else{
-                    resolve(token)
-                }
-            }
-        )
-    })
-}
+    // 🚨 Verificamos si la clave existe
+    console.log("🔐 SECRET_KEY:", process.env.SECRET_KEY);
+
+    jwt.sign(
+      payload,
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "24h"
+      },
+      (err, token) => {
+        if (err) {
+          reject({
+            success: false,
+            message: "No se pudo renerar el TOKEN"
+          });
+        } else {
+          resolve(token);
+        }
+      }
+    );
+  });
+};

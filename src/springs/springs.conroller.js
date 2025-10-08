@@ -60,7 +60,7 @@ export const createSprings = async (req, res) => {
 
     await resorte.save();
 
-    res.status(201).json({
+    res.status(200).json({
       message: "Resorte creado exitosamente",
       useDetails: {
         carpeta,

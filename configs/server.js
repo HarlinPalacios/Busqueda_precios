@@ -1,5 +1,8 @@
 "use strict";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -12,9 +15,8 @@ import { dbConnection } from "./mongo.js";
 
 const app = express();
 
-// Middlewares
 app.use(cors({
-  origin: "*", // Acepta todas las conexiones (ajusta si es necesario)
+  origin: ['https://uniresortes.web.app'], // 👈 Tu frontend real
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -22,14 +24,11 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
 
-// Rutas
 app.use("/busqueda/v1/auth", authRoutes);
 app.use("/busqueda/v1/springs", Springs);
 app.use("/busqueda/v1/carpetas", Carpeta);
 
-// Conexión a DB y crear admin
 await dbConnection();
 AddUserAdmin();
 
-// ✅ Exportamos app directamente
 export default app;
