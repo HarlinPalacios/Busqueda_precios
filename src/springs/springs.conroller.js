@@ -17,7 +17,6 @@ export const createSprings = async (req, res) => {
       costo,
     } = req.body;
 
-    // Normalizar código
     const normalize = (value) =>
       typeof value === "string" ? value.replace(/\s/g, "").toLowerCase() : value;
 
@@ -29,7 +28,6 @@ export const createSprings = async (req, res) => {
       });
     }
 
-    // Subida de imagen a Cloudinary (si hay archivo)
     let imagen = null;
 
     if (req.file) {
@@ -37,7 +35,7 @@ export const createSprings = async (req, res) => {
       const dataURI = `data:${req.file.mimetype};base64,${b64}`;
 
       const resultado = await cloudinary.uploader.upload(dataURI, {
-        folder: "resortes", // Puedes cambiar el nombre de la carpeta en Cloudinary
+        folder: "resortes",
       });
 
       imagen = resultado.secure_url;
@@ -122,7 +120,6 @@ export const updateSpringsById = async (req, res) => {
         const { id } = req.params
         let data = req.body
 
-        // Si hay archivo nuevo, reemplazar el campo imagen
         if (req.file) {
             data.imagen = `/uploads/${req.file.filename}`;
         }

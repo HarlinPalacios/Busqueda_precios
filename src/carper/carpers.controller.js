@@ -46,7 +46,6 @@ export const getSpringsByCarpeta = async (req, res) => {
   try {
     const { carpetaId } = req.params;
 
-    // Asegúrate de convertir el ID a ObjectId
     const objectId = new mongoose.Types.ObjectId(carpetaId);
 
     const resortes = await Resortes.find({ carpeta: objectId });
@@ -69,7 +68,6 @@ export const deleteCarpeta = async (req, res) => {
       return res.status(400).json({ message: "ID inválido" });
     }
 
-    // Buscar carpeta
     const carpeta = await Carpeta.findById(id);
 
     if (!carpeta) {
@@ -78,10 +76,8 @@ export const deleteCarpeta = async (req, res) => {
       });
     }
 
-    // Eliminar carpeta
     await Carpeta.findByIdAndDelete(id);
 
-    // 🔥 Eliminar resortes asociados a la carpeta
     await Springs.deleteMany({ carpeta: id });
 
     return res.status(200).json({
