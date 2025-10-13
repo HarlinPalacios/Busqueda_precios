@@ -20,7 +20,10 @@ export const createSprings = async (req, res) => {
     const normalize = (value) =>
       typeof value === "string" ? value.replace(/\s/g, "").toLowerCase() : value;
 
-    const codigoExistente = await Resortes.findOne({ codigo: normalize(codigo) });
+    const codigoExistente = await Resortes.findOne({
+      carpeta,
+      codigo: normalize(codigo),
+    });
 
     if (codigoExistente) {
       return res.status(400).json({
