@@ -17,12 +17,14 @@ export const createSprings = async (req, res) => {
       costo,
     } = req.body;
 
-    const normalize = (value) =>
-      typeof value === "string" ? value.replace(/\s/g, "").toLowerCase() : value;
+    // Validar que el código exista y sea texto
+    if (!codigo || typeof codigo !== "string") {
+      return res.status(400).json({ message: "El código es obligatorio y debe ser texto." });
+    }
 
+    // Buscar código existente (insensible a mayúsculas)
     const codigoExistente = await Resortes.findOne({
-      carpeta,
-      codigo: normalize(codigo),
+      codigo: { $regex: new RegExp(`^${codigo}$`, "i") },
     });
 
     if (codigoExistente) {
@@ -31,8 +33,8 @@ export const createSprings = async (req, res) => {
       });
     }
 
+    // Subir imagen a Cloudinary
     let imagen = null;
-
     if (req.file) {
       const b64 = Buffer.from(req.file.buffer).toString("base64");
       const dataURI = `data:${req.file.mimetype};base64,${b64}`;
@@ -44,9 +46,10 @@ export const createSprings = async (req, res) => {
       imagen = resultado.secure_url;
     }
 
+    // Crear y guardar el nuevo resorte
     const resorte = new Resortes({
       carpeta,
-      codigo: normalize(codigo),
+      codigo,
       calibre,
       tipo_resorte,
       dia_externo,
@@ -63,20 +66,7 @@ export const createSprings = async (req, res) => {
 
     res.status(200).json({
       message: "Resorte creado exitosamente",
-      useDetails: {
-        carpeta,
-        codigo: resorte.codigo,
-        calibre: resorte.calibre,
-        tipo_resorte: resorte.tipo_resorte,
-        tipo_acero: resorte.tipo_acero,
-        dia_externo: resorte.dia_externo,
-        dia_interno: resorte.dia_interno,
-        largo: resorte.largo,
-        largo_argolla: resorte.largo_argolla,
-        fecha_venta: resorte.fecha_venta,
-        costo: resorte.costo,
-        imagen: resorte.imagen,
-      },
+      useDetails: resorte,
     });
   } catch (error) {
     console.error("Error al crear resorte:", error);

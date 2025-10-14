@@ -17,6 +17,18 @@ import { dbConnection } from "./mongo.js";
 
 const app = express();
 
+// -----------------------------
+// CONFIGURACIÓN GLOBAL DE CLOUDINARY
+// -----------------------------
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// -----------------------------
+// MIDDLEWARES
+// -----------------------------
 app.use(cors({
   origin: ['https://uniresortes.web.app'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -26,32 +38,31 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
 
+// -----------------------------
+// RUTAS
+// -----------------------------
 app.use("/busqueda/v1/auth", authRoutes);
 app.use("/busqueda/v1/springs", Springs);
 app.use("/busqueda/v1/carpetas", Carpeta);
 
+// Endpoint de prueba para verificar Cloudinary
 app.get("/api/test-cloudinary", (req, res) => {
-  const config = {
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  };
-
-  cloudinary.config(config);
-
   console.log("🌥️ Cloudinary Config:", {
-    name: config.cloud_name,
-    key: config.api_key ? "✅" : "❌",
-    secret: config.api_secret ? "✅" : "❌",
+    cloud_name: cloudinary.config().cloud_name,
+    api_key: cloudinary.config().api_key ? "✅" : "❌",
+    api_secret: cloudinary.config().api_secret ? "✅" : "❌",
   });
 
   res.json({
-    CLOUD_NAME: config.cloud_name || "❌ No detectado",
-    API_KEY: config.api_key ? "✅" : "❌ No detectado",
-    API_SECRET: config.api_secret ? "✅" : "❌ No detectado",
+    CLOUD_NAME: cloudinary.config().cloud_name || "❌ No detectado",
+    API_KEY: cloudinary.config().api_key ? "✅" : "❌ No detectado",
+    API_SECRET: cloudinary.config().api_secret ? "✅" : "❌ No detectado",
   });
 });
 
+// -----------------------------
+// CONEXIÓN A BASE DE DATOS Y ADMIN
+// -----------------------------
 await dbConnection();
 AddUserAdmin();
 
